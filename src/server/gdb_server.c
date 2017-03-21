@@ -2072,6 +2072,7 @@ static int gdb_generate_target_description(struct target *target, char **tdesc_o
 	int retval = ERROR_OK;
 	struct reg **reg_list = NULL;
 	int reg_list_size;
+	char const *architecture;
 	char const **features = NULL;
 	int feature_list_size = 0;
 	char *tdesc = NULL;
@@ -2108,6 +2109,12 @@ static int gdb_generate_target_description(struct target *target, char **tdesc_o
 			"<?xml version=\"1.0\"?>\n"
 			"<!DOCTYPE target SYSTEM \"gdb-target.dtd\">\n"
 			"<target version=\"1.0\">\n");
+
+	/* generate architecture element if supported by target */
+	architecture = target_get_gdb_arch(target);
+	if (architecture != NULL)
+		xml_printf(&retval, &tdesc, &pos, &size,
+				"<architecture>%s</architecture>\n", architecture);
 
 	/* generate target description according to register list */
 	if (features != NULL) {
@@ -2252,6 +2259,8 @@ static int gdb_target_description_supported(struct target *target, int *supporte
 	char const **features = NULL;
 	int feature_list_size = 0;
 
+	char const *architecture = target_get_gdb_arch(target);
+
 	retval = target_get_gdb_reg_list(target, &reg_list,
 			&reg_list_size, REG_CLASS_ALL);
 	if (retval != ERROR_OK) {
@@ -2273,7 +2282,7 @@ static int gdb_target_description_supported(struct target *target, int *supporte
 	}
 
 	if (supported) {
-		if (feature_list_size)
+		if (architecture || feature_list_size)
 			*supported = 1;
 		else
 			*supported = 0;
