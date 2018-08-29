@@ -20,6 +20,7 @@ noinst_LTLIBRARIES += %D%/libtarget.la
 	$(MIPS32_SRC) \
 	$(NDS32_SRC) \
 	$(INTEL_IA32_SRC) \
+	$(ESIRISC_SRC) \
 	%D%/avrt.c \
 	%D%/dsp563xx.c \
 	%D%/dsp563xx_once.c \
@@ -118,6 +119,10 @@ INTEL_IA32_SRC = \
 	%D%/lakemont.c \
 	%D%/x86_32_common.c
 
+ESIRISC_SRC = \
+	%D%/esirisc.c \
+	%D%/esirisc_jtag.c
+
 %C%_libtarget_la_SOURCES += \
 	%D%/algorithm.h \
 	%D%/arm.h \
@@ -189,6 +194,10 @@ INTEL_IA32_SRC = \
 	%D%/nds32_v3m.h \
 	%D%/nds32_aice.h \
 	%D%/lakemont.h \
-	%D%/x86_32_common.h
+	%D%/x86_32_common.h \
+	%D%/arm_cti.h \
+	%D%/esirisc.h \
+	%D%/esirisc_jtag.h \
+	%D%/esirisc_regs.h
 
 include %D%/openrisc/Makefile.am
