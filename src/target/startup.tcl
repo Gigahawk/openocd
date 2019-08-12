@@ -128,6 +128,17 @@ proc ocd_process_reset_inner { MODE } {
 			# Did we succeed?
 			set s [$t curstate]
 
+			# TODO: Workaround for targets that cannot halt while reset is
+			# asserted. That halt during reset mechanism does not work for
+			# all target types, yet other scripts and commands assume that
+			# reset-halt always works.  Added this bit so that failing to
+			# halt during reset is a warning and not fatal.
+			if { 0 != [string compare $s "halted" ] } {
+				echo "target did not halt at reset vector"
+				halt
+				set s [$t curstate]
+			}
+
 			if { 0 != [string compare $s "halted" ] } {
 				return -code error [format "TARGET: %s - Not halted" $t]
 			}
